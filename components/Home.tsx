@@ -8,7 +8,6 @@ import TrickCategory from "../types/TrickCategory";
 import DebouncedInput from "./DebouncedInput";
 import Filters from "./Filters";
 import NoResults from "./NoResults";
-import { screenStyles } from "./Screen";
 import TrickList from "./TrickList";
 
 export default ({

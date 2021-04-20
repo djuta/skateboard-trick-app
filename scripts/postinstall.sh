@@ -1,0 +1,1 @@
+cp ./vendor/react-native-youtube/YouTube.web.js ./node_modules/react-native-youtube/

@@ -3,15 +3,12 @@ import LearnStatus from "../enums/LearnStatus";
 import Trick from "../types/Trick";
 import TrickCategory from "../types/TrickCategory";
 import { fetchAllTricks } from "../repository/tricksRepository";
-import LearnedTricks from "../types/LearnedTricks";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import LearnStatusFilters from "../types/LearnStatusFilters";
-
-const LEARNED_TRICKS_STORAGE_KEY = "learnedTricks";
+import useLearnedTricksState from "./useLearnedTricksState";
 
 export default () => {
     const [tricks, setTricks] = useState<TrickCategory[]>([]);
-    const [learnedTricks, setLearnedTricks] = useState<LearnedTricks>({});
+    const { learnedTricks, setTrickStatus } = useLearnedTricksState();
     const [searchQuery, setSearchQuery] = useState("");
 
     const [filters, setFilters] = useState<LearnStatusFilters>({
@@ -22,9 +19,12 @@ export default () => {
 
     const isFiltered = Object.values(filters).includes(true);
 
-    const setTrickStatus = (id: string, status: LearnStatus) => {
-        setLearnedTricks((state) => ({ ...state, [id]: status }));
-    };
+    const isTrickMatch = useCallback(
+        ({ name }: Trick) =>
+            !searchQuery ||
+            name.toLowerCase().includes(searchQuery.toLowerCase()),
+        [searchQuery]
+    );
 
     const isTrickFiltered = useCallback(
         ({ id }: Trick) => {
@@ -42,23 +42,9 @@ export default () => {
         [filters, learnedTricks]
     );
 
-    const isTrickMatch = useCallback(
-        ({ name }: Trick) =>
-            !searchQuery ||
-            name.toLowerCase().includes(searchQuery.toLowerCase()),
-        [searchQuery]
-    );
-
-    const storeLearnedTricks = useCallback(async () => {
-        try {
-            await AsyncStorage.setItem(
-                LEARNED_TRICKS_STORAGE_KEY,
-                JSON.stringify(learnedTricks)
-            );
-        } catch (e) {
-            // do something
-        }
-    }, [learnedTricks]);
+    const updateFilter = (status: LearnStatus, value: boolean) => {
+        setFilters((state) => ({ ...state, [status]: value }));
+    };
 
     const filteredTricks = useMemo(() => {
         if (!isFiltered && !searchQuery) {
@@ -79,22 +65,11 @@ export default () => {
             },
             []
         );
-    }, [tricks, searchQuery, tricks, isTrickMatch, isTrickFiltered]);
+    }, [tricks, searchQuery, isTrickMatch, isTrickFiltered]);
 
     useEffect(() => {
-        AsyncStorage.getItem(LEARNED_TRICKS_STORAGE_KEY).then((savedTricks) =>
-            setLearnedTricks(JSON.parse(savedTricks || "{}"))
-        );
         fetchAllTricks().then(setTricks);
     }, []);
-
-    useEffect(() => {
-        storeLearnedTricks();
-    }, [learnedTricks]);
-
-    const updateFilter = (status: LearnStatus, value: boolean) => {
-        setFilters((state) => ({ ...state, [status]: value }));
-    };
 
     return {
         learnedTricks,

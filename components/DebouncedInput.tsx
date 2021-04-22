@@ -1,5 +1,5 @@
 import { debounce } from "lodash";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { TextInput } from "react-native-gesture-handler";
 
 export default ({
@@ -11,12 +11,12 @@ export default ({
 }) => {
     const [value, setValue] = useState("");
 
-    useEffect(
-        debounce(() => {
-            onValueChange(value);
-        }, 100),
-        [value, onValueChange]
+    const debouncedHandler = useCallback(
+        debounce((value) => onValueChange(value), 250),
+        [onValueChange]
     );
+
+    useEffect(() => debouncedHandler(value), [value, debouncedHandler]);
 
     return (
         <TextInput

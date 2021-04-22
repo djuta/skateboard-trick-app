@@ -30,16 +30,13 @@ export default ({
     <SafeAreaView style={COMMON_STYLES.container}>
         <DebouncedInput onValueChange={setSearchQuery} style={styles.input} />
         <Filters filters={filters} updateFilter={updateFilter} />
-        {tricks.length === 0 ? (
-            <NoResults />
-        ) : (
-            <TrickList
-                tricks={tricks}
-                navigation={navigation}
-                setTrickStatus={setTrickStatus}
-                learnedTricks={learnedTricks}
-            />
-        )}
+        {tricks.length === 0 && <NoResults />}
+        <TrickList
+            tricks={tricks}
+            navigation={navigation}
+            setTrickStatus={setTrickStatus}
+            learnedTricks={learnedTricks}
+        />
     </SafeAreaView>
 );
 

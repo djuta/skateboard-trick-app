@@ -4,7 +4,7 @@ import { COLOR, FONT_SIZE, SIZE } from "../constants/styles";
 import LearnStatus from "../enums/LearnStatus";
 import Props from "../types/Props";
 import Trick from "../types/Trick";
-import TrickStatusButton from "./TrickStatusButton";
+import TrickStatusButtonGroup from "./TrickStatusButtonGroup";
 
 export default ({
     trick,
@@ -16,37 +16,22 @@ export default ({
     status: LearnStatus;
     onPress: Props["onPress"];
     onSetStatus: Function;
-}) => {
-    const isLearning = status === LearnStatus.Learning;
-    const isComplete = status === LearnStatus.Learned;
-
-    const onChangeStatus = (newStatus: LearnStatus) => {
-        const nextStatus = newStatus === status ? LearnStatus.None : newStatus;
-        onSetStatus(trick.id, nextStatus);
-    };
-
-    return (
-        <View>
-            <Text onPress={onPress} style={styles.item}>
-                <View style={styles.itemContents}>
-                    <Text>{trick.name}</Text>
-                    <View style={styles.buttons}>
-                        <TrickStatusButton
-                            isActive={isLearning}
-                            onChangeStatus={onChangeStatus}
-                            status={LearnStatus.Learning}
-                        />
-                        <TrickStatusButton
-                            isActive={isComplete}
-                            onChangeStatus={onChangeStatus}
-                            status={LearnStatus.Learned}
-                        />
-                    </View>
+}) => (
+    <View>
+        <Text onPress={onPress} style={styles.item}>
+            <View style={styles.itemContents}>
+                <Text>{trick.name}</Text>
+                <View style={styles.buttons}>
+                    <TrickStatusButtonGroup
+                        trick={trick}
+                        status={status}
+                        onSetStatus={onSetStatus}
+                    />
                 </View>
-            </Text>
-        </View>
-    );
-};
+            </View>
+        </Text>
+    </View>
+);
 
 const styles = StyleSheet.create({
     item: {

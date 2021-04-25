@@ -39,7 +39,7 @@ export default ({
     const icon = STATUS_ICON_MAP[status];
     return (
         <Button
-            onPress={() => onChangeStatus(status)}
+            onPress={(e) => onChangeStatus(status, e)}
             icon={<Icon name={icon} size={SIZE.MEDIUM} color={color} />}
             {...createButtonStyleProps(isActive, status)}
         />

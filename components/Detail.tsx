@@ -1,11 +1,20 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, GestureResponderEvent } from "react-native";
 import { Button } from "react-native-elements";
 import YouTube from "react-native-youtube";
 import { COLOR, COMMON_STYLES, FONT_SIZE, SIZE } from "../constants/styles";
-import { DetailProps } from "../types/Stack";
+import LearnedTricks from "../types/LearnedTricks";
+import TrickStatusButtonGroup from "./TrickStatusButtonGroup";
 
-export default ({ route }: DetailProps) => {
+export default ({
+    route,
+    setTrickStatus,
+    learnedTricks,
+}: {
+    route: any;
+    setTrickStatus: Function;
+    learnedTricks: LearnedTricks;
+}) => {
     const { trick } = route.params;
     const { youtubeIds, name, description } = trick;
     const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
@@ -32,20 +41,26 @@ export default ({ route }: DetailProps) => {
                 videoId={youtubeIds[currentVideoIndex]}
                 style={{ alignSelf: "stretch", height: 300 }}
             />
-            <View style={styles.buttons}>
-                <Button
-                    buttonStyle={styles.button}
-                    title="Previous"
-                    disabled={isFirstVideo}
-                    onPress={goToPreviousVideo}
-                />
-                <Button
-                    title="Next"
-                    disabled={isLastVideo}
-                    onPress={goToNextVideo}
+            <View style={styles.buttonRow}>
+                <View style={styles.buttons}>
+                    <Button
+                        buttonStyle={styles.button}
+                        title="Previous"
+                        disabled={isFirstVideo}
+                        onPress={goToPreviousVideo}
+                    />
+                    <Button
+                        title="Next"
+                        disabled={isLastVideo}
+                        onPress={goToNextVideo}
+                    />
+                </View>
+                <TrickStatusButtonGroup
+                    status={learnedTricks[trick.id]}
+                    onSetStatus={setTrickStatus}
+                    trick={trick}
                 />
             </View>
-
             <Text>{description}</Text>
         </View>
     );
@@ -64,6 +79,11 @@ const styles = StyleSheet.create({
         paddingVertical: SIZE.SMALL,
         flexDirection: "row",
         fontSize: FONT_SIZE.MEDIUM,
+    },
+    buttonRow: {
+        alignItems: "center",
+        flexDirection: "row",
+        justifyContent: "space-between",
     },
     button: {
         marginRight: SIZE.SMALL,

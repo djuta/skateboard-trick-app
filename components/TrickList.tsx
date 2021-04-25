@@ -26,7 +26,7 @@ export default ({
                 trick={trick}
                 onPress={() => navigation.navigate("Detail", { trick })}
                 onSetStatus={setTrickStatus}
-                status={learnedTricks[trick.id] || LearnStatus.None}
+                status={learnedTricks[trick.id]}
             />
         )}
         renderSectionHeader={({ section: { title } }) => (

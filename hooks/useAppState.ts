@@ -5,11 +5,13 @@ import TrickCategory from "../types/TrickCategory";
 import { fetchAllTricks } from "../repository/tricksRepository";
 import LearnStatusFilters from "../types/LearnStatusFilters";
 import useLearnedTricksState from "./useLearnedTricksState";
+import useSettingsState from "./useSettingsState";
 
 export default () => {
     const [tricks, setTricks] = useState<TrickCategory[]>([]);
     const { learnedTricks, setTrickStatus } = useLearnedTricksState();
     const [searchQuery, setSearchQuery] = useState("");
+    const { settings, updateSetting } = useSettingsState();
 
     const [filters, setFilters] = useState<LearnStatusFilters>({
         [LearnStatus.None]: false,
@@ -79,5 +81,7 @@ export default () => {
         filters,
         setSearchQuery,
         searchQuery,
+        settings,
+        updateSetting,
     };
 };
